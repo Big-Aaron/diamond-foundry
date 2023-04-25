@@ -12,3 +12,8 @@ docs/
 
 # Dotenv file
 .env
+
+.history
+.DS_Store
+
+selectors
