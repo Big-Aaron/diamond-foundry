@@ -59,7 +59,7 @@ contract DeployScript is Script, Selectors {
             bytes memory initCalldata = abi.encodeWithSelector(DiamondInit.init.selector);
 
             DiamondArgs memory args =
-                DiamondArgs({owner: address(this), init: address(diamondInit), initCalldata: initCalldata});
+                DiamondArgs({owner: msg.sender, init: address(diamondInit), initCalldata: initCalldata});
 
             diamond = new Diamond(facetCuts, args);
             console.log("Diamond deployed at address: %s", address(diamond));
