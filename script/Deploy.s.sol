@@ -14,8 +14,6 @@ import "../src/interfaces/IDiamond.sol";
 import "./libraries/diamond.sol";
 
 contract DeployScript is Script, Selectors {
-    using LibSelector for bytes4[];
-
     DiamondInit diamondInit;
     DiamondCutFacet diamondCutFacet;
     DiamondLoupeFacet diamondLoupeFacet;
@@ -63,6 +61,8 @@ contract DeployScript is Script, Selectors {
 
             diamond = new Diamond(facetCuts, args);
             console.log("Diamond deployed at address: %s", address(diamond));
+
+            assertEq(OwnershipFacet(address(diamond)).owner(), vm.addr(deployerPrivateKey));
         }
     }
 }

@@ -4,8 +4,8 @@ pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
 
-library HexDecoder {
-    function decode(string memory input) public pure returns (bytes memory output) {
+contract HexDecoder {
+    function decode(string memory input) external pure returns (bytes memory output) {
         uint256 len = bytes(input).length >> 1;
 
         //bytes memory b = bytes(input);
@@ -102,8 +102,8 @@ library HexDecoder {
     }
 }
 
-library LibSelector {
-    function remove(bytes4[] memory _facetCuts, bytes4 selector) internal pure returns (bytes4[] memory facetCuts_) {
+contract LibSelector {
+    function remove(bytes4[] memory _facetCuts, bytes4 selector) external pure returns (bytes4[] memory facetCuts_) {
         uint256 len = _facetCuts.length;
 
         facetCuts_ = new bytes4[](len- 1);
@@ -132,7 +132,7 @@ library LibSelector {
     }
 
     function remove(bytes4[] memory _facetCuts, string memory signature)
-        internal
+        external
         pure
         returns (bytes4[] memory facetCuts_)
     {
@@ -166,7 +166,7 @@ library LibSelector {
     }
 
     function remove(bytes4[] memory _facetCuts, bytes4[] memory removedSelector)
-        internal
+        external
         pure
         returns (bytes4[] memory facetCuts_)
     {
@@ -195,7 +195,7 @@ library LibSelector {
         }
     }
 
-    function compare(bytes4[] memory arr1, bytes4[] memory arr2) public pure returns (bool) {
+    function compare(bytes4[] memory arr1, bytes4[] memory arr2) external pure returns (bool) {
         if (arr1.length != arr2.length) {
             return false;
         }
@@ -231,6 +231,9 @@ library LibSelector {
 }
 
 contract Selectors is Test {
+    HexDecoder hexDecoder = new HexDecoder();
+    LibSelector libSelector = new LibSelector();
+
     bytes4[] public selectors;
 
     function getAllSelector(string memory path, string memory solName, string memory contractName)
@@ -277,7 +280,7 @@ contract Selectors is Test {
                 }
             }
 
-            selectors.push(bytes4(HexDecoder.decode(string(selector))));
+            selectors.push(bytes4(hexDecoder.decode(string(selector))));
         }
 
         facetCuts = selectors;
