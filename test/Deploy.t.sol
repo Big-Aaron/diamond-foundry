@@ -53,13 +53,13 @@ contract Deploy is Selectors {
 
         bytes4[] memory facetFunctionSelectors =
             DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(diamondCutFacet));
-        assertTrue(libSelector.compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
+        assertTrue(compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
 
         facetFunctionSelectors = DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(diamondLoupeFacet));
-        assertTrue(libSelector.compare(facetFunctionSelectors, facetCuts[1].functionSelectors));
+        assertTrue(compare(facetFunctionSelectors, facetCuts[1].functionSelectors));
 
         facetFunctionSelectors = DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(ownershipFacet));
-        assertTrue(libSelector.compare(facetFunctionSelectors, facetCuts[2].functionSelectors));
+        assertTrue(compare(facetFunctionSelectors, facetCuts[2].functionSelectors));
     }
 
     function testDiamond() public {
@@ -71,14 +71,13 @@ contract Deploy is Selectors {
             IDiamond.FacetCut[] memory facetCuts = new IDiamond.FacetCut[](1);
             facetCuts[0].facetAddress = address(test1Facet);
             facetCuts[0].action = IDiamond.FacetCutAction.Add;
-            facetCuts[0].functionSelectors = libSelector.remove(
-                getAllSelector("src/facets", "Test1Facet.sol", "Test1Facet"), "supportsInterface(bytes4)"
-            );
+            facetCuts[0].functionSelectors =
+                remove(getAllSelector("src/facets", "Test1Facet.sol", "Test1Facet"), "supportsInterface(bytes4)");
             DiamondCutFacet(address(diamond)).diamondCut(facetCuts, address(0), "");
 
             bytes4[] memory facetFunctionSelectors =
                 DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(test1Facet));
-            assertTrue(libSelector.compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
+            assertTrue(compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
 
             Test1Facet(address(diamond)).test1Func1();
             assertEq(Test1Facet(address(diamond)).test1Func2(), address(diamond));
@@ -99,7 +98,7 @@ contract Deploy is Selectors {
             bytes4[] memory facetFunctionSelectors =
                 DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(test1Facet));
             bytes4[] memory AllSelectors = getAllSelector("src/facets", "Test1Facet.sol", "Test1Facet");
-            assertTrue(libSelector.compare(facetFunctionSelectors, AllSelectors));
+            assertTrue(compare(facetFunctionSelectors, AllSelectors));
         }
 
         // Add Test2Facet
@@ -116,7 +115,7 @@ contract Deploy is Selectors {
 
             bytes4[] memory facetFunctionSelectors =
                 DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(test2Facet));
-            assertTrue(libSelector.compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
+            assertTrue(compare(facetFunctionSelectors, facetCuts[0].functionSelectors));
         }
 
         // Remove some test2 functions
@@ -137,8 +136,8 @@ contract Deploy is Selectors {
                 DiamondLoupeFacet(address(diamond)).facetFunctionSelectors(address(test2Facet));
 
             bytes4[] memory remainder =
-                libSelector.remove(getAllSelector("src/facets", "Test2Facet.sol", "Test2Facet"), RemoveSelectors);
-            assertTrue(libSelector.compare(facetFunctionSelectors, remainder));
+                remove(getAllSelector("src/facets", "Test2Facet.sol", "Test2Facet"), RemoveSelectors);
+            assertTrue(compare(facetFunctionSelectors, remainder));
         }
     }
 }
