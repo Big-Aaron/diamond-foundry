@@ -25,7 +25,8 @@ contract DeployScript is Script, Selectors {
 
     function run() external {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
-
+        address deployer = vm.addr(deployerPrivateKey);
+        console.log("Deployer address: %s", deployer);
         vm.startBroadcast(deployerPrivateKey);
 
         {
@@ -57,7 +58,7 @@ contract DeployScript is Script, Selectors {
             bytes memory initCalldata = abi.encodeWithSelector(DiamondInit.init.selector);
 
             DiamondArgs memory args =
-                DiamondArgs({owner: msg.sender, init: address(diamondInit), initCalldata: initCalldata});
+                DiamondArgs({owner: deployer, init: address(diamondInit), initCalldata: initCalldata});
 
             diamond = new Diamond(facetCuts, args);
             console.log("Diamond deployed at address: %s", address(diamond));
